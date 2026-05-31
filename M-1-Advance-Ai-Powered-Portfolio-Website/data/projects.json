@@ -1,0 +1,49 @@
+{
+  "intro": "A collection of things I've built — from side experiments to production systems.",
+  "items": [
+    {
+      "id": "p1",
+      "title": "OceanUI Design System",
+      "category": "Design System",
+      "description": "A comprehensive component library built with React and TypeScript, featuring 80+ accessible components with dark mode support.",
+      "tech": ["React", "TypeScript", "Storybook", "Radix UI"],
+      "year": "2024",
+      "link": "https://github.com",
+      "imageURL": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
+      "featured": true
+    },
+    {
+      "id": "p2",
+      "title": "DataStream Analytics",
+      "category": "Web App",
+      "description": "Real-time analytics dashboard processing 1M+ events per day with WebSocket-powered live updates.",
+      "tech": ["Next.js", "WebSockets", "PostgreSQL", "Redis"],
+      "year": "2024",
+      "link": "https://github.com",
+      "imageURL": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80",
+      "featured": true
+    },
+    {
+      "id": "p3",
+      "title": "Nebula CLI",
+      "category": "Open Source",
+      "description": "A developer productivity toolkit with AI-powered code generation and project scaffolding.",
+      "tech": ["Node.js", "OpenAI API", "Commander.js"],
+      "year": "2023",
+      "link": "https://github.com",
+      "imageURL": "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=600&q=80",
+      "featured": false
+    },
+    {
+      "id": "p4",
+      "title": "Pulse — Health Tracker",
+      "category": "Mobile",
+      "description": "Cross-platform health tracking app with ML-powered insights and wearable device integration.",
+      "tech": ["React Native", "TensorFlow Lite", "HealthKit"],
+      "year": "2023",
+      "link": "https://github.com",
+      "imageURL": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&q=80",
+      "featured": false
+    }
+  ]
+}

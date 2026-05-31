@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "Frontend",
+      "items": ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "WebGL"]
+    },
+    {
+      "name": "Backend",
+      "items": ["Node.js", "Go", "PostgreSQL", "Redis", "GraphQL", "REST APIs"]
+    },
+    {
+      "name": "DevOps",
+      "items": ["Docker", "Kubernetes", "AWS", "CI/CD", "Terraform", "Vercel"]
+    },
+    {
+      "name": "Design",
+      "items": ["Figma", "Motion Design", "Design Systems", "Accessibility", "User Research"]
+    }
+  ]
+}

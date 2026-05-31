@@ -1,0 +1,13 @@
+{
+  "provider": "gemini",
+  "openaiKey": "",
+  "openaiModel": "gpt-4.1-mini",
+  "geminiKey": "",
+  "geminiModel": "gemini-2.5-flash",
+  "claudeKey": "",
+  "claudeModel": "claude-haiku-4-5-20251001",
+  "openrouterKey": "",
+  "openrouterModel": "meta-llama/llama-3.1-8b-instruct:free",
+  "assistantName": "Portfolio Assistant",
+  "greeting": "Hi! I'm here to answer any questions about this portfolio. Ask me anything!"
+}

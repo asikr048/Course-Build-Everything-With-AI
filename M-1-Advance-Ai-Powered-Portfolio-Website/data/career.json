@@ -1,0 +1,27 @@
+{
+  "intro": "My journey through education and industry — building skills one chapter at a time.",
+  "sections": [
+    {
+      "title": "Education",
+      "items": [
+        { "id": "e1", "type": "Bachelor", "title": "Computer Science", "org": "MIT", "years": "2016–2020" },
+        { "id": "e2", "type": "Master", "title": "Human-Computer Interaction", "org": "Stanford", "years": "2020–2022" }
+      ]
+    },
+    {
+      "title": "Experience",
+      "items": [
+        { "id": "j1", "type": "Full-Time", "title": "Senior Frontend Engineer", "org": "Vercel", "years": "2023–present" },
+        { "id": "j2", "type": "Full-Time", "title": "Software Engineer II", "org": "Stripe", "years": "2022–2023" },
+        { "id": "j3", "type": "Intern", "title": "Frontend Intern", "org": "Figma", "years": "Summer 2021" }
+      ]
+    },
+    {
+      "title": "Certifications",
+      "items": [
+        { "id": "c1", "type": "Certificate", "title": "AWS Solutions Architect", "org": "Amazon", "years": "2023" },
+        { "id": "c2", "type": "Certificate", "title": "Google Cloud Professional", "org": "Google", "years": "2022" }
+      ]
+    }
+  ]
+}

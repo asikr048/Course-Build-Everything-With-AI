@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 210 100% 4%;
+    --foreground: 195 80% 95%;
+    --card: 210 60% 8%;
+    --card-foreground: 195 80% 95%;
+    --primary: 185 100% 48%;
+    --primary-foreground: 210 100% 4%;
+    --secondary: 210 40% 14%;
+    --secondary-foreground: 195 80% 95%;
+    --muted: 210 40% 12%;
+    --muted-foreground: 210 20% 55%;
+    --accent: 185 100% 48%;
+    --accent-foreground: 210 100% 4%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 30% 18%;
+    --input: 210 30% 18%;
+    --ring: 185 100% 48%;
+    --radius: 1rem;
+  }
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-plus-jakarta), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .font-syne {
+    font-family: var(--font-syne), system-ui, sans-serif;
+  }
+}
+
+html { scroll-behavior: smooth; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: hsl(185 100% 48% / 0.3); border-radius: 99px; }
+
+/* Glow effect */
+.glow-teal {
+  box-shadow: 0 0 20px hsl(185 100% 48% / 0.15), 0 0 60px hsl(185 100% 48% / 0.05);
+}
+.text-glow {
+  text-shadow: 0 0 20px hsl(185 100% 48% / 0.5);
+}
+
+/* Glass card */
+.glass {
+  background: hsl(210 60% 8% / 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid hsl(185 100% 48% / 0.1);
+}
+.glass:hover {
+  border-color: hsl(185 100% 48% / 0.25);
+}
+
+/* Page fade in */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  animation: fadeUp 0.5s ease forwards;
+}
+
+/* Pulse ring */
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 hsl(185 100% 48% / 0.4); }
+  70%  { box-shadow: 0 0 0 12px hsl(185 100% 48% / 0); }
+  100% { box-shadow: 0 0 0 0 hsl(185 100% 48% / 0); }
+}
+.pulse-ring { animation: pulseRing 2.5s ease-out infinite; }
+
+/* Wave shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, hsl(185 100% 48% / 0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
