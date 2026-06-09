@@ -25,7 +25,7 @@ export default function ProjectsPage() {
       <div className="max-w-5xl mx-auto fade-up">
         {/* Header */}
         <div className="mb-8">
-          <p className="text-xs uppercase tracking-widest mb-1 font-syne" style={{ color: "hsl(185,100%,55%)" }}>Work</p>
+          <p className="text-xs uppercase tracking-widest mb-1 font-syne" style={{ color: "hsl(var(--p))" }}>Work</p>
           <h1 className="text-3xl font-bold font-syne text-white">Projects</h1>
           <p className="text-white/40 text-sm mt-2">Things I&apos;ve built, shipped and learned from.</p>
         </div>
@@ -36,8 +36,8 @@ export default function ProjectsPage() {
             <button key={cat} onClick={() => setFilter(cat)}
               className="px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200"
               style={filter === cat
-                ? { background: "hsl(185 100% 48% / 0.2)", color: "hsl(185,100%,60%)", border: "1px solid hsl(185 100% 48% / 0.3)" }
-                : { background: "hsl(210 60% 8% / 0.5)", color: "hsl(185,100%,40%)", border: "1px solid hsl(185 100% 48% / 0.08)" }
+                ? { background: "hsl(var(--p) / 0.2)", color: "hsl(var(--p))", border: "1px solid hsl(var(--p) / 0.3)" }
+                : { background: "hsl(210 60% 8% / 0.5)", color: "hsl(var(--p))", border: "1px solid hsl(var(--p) / 0.08)" }
               }>
               {cat}
             </button>
@@ -72,14 +72,14 @@ export default function ProjectsPage() {
                 <div className="flex flex-wrap gap-1">
                   {p.tech.map(t => (
                     <span key={t} className="text-[10px] px-2 py-0.5 rounded-md"
-                      style={{ background: "hsl(185 100% 48% / 0.06)", color: "hsl(185,100%,55%)", border: "1px solid hsl(185 100% 48% / 0.12)" }}>{t}</span>
+                      style={{ background: "hsl(var(--p) / 0.06)", color: "hsl(var(--p))", border: "1px solid hsl(var(--p) / 0.12)" }}>{t}</span>
                   ))}
                 </div>
                 {/* Links */}
                 {p.link && (
                   <a href={p.link} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-xs font-medium mt-auto transition-all hover:gap-2"
-                    style={{ color: "hsl(185,100%,55%)" }}>
+                    style={{ color: "hsl(var(--p))" }}>
                     <ExternalLink size={12} /> View project
                   </a>
                 )}

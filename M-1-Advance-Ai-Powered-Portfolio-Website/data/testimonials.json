@@ -1,0 +1,19 @@
+{
+  "intro": "Kind words from people I've worked with.",
+  "items": [
+    {
+      "id": "t1",
+      "name": "Sarah Chen",
+      "role": "Product Lead, Acme Inc.",
+      "quote": "One of the most reliable engineers I've worked with — ships fast, communicates clearly, and genuinely cares about the user experience.",
+      "avatar": ""
+    },
+    {
+      "id": "t2",
+      "name": "Marcus Lee",
+      "role": "Founder, Northstar",
+      "quote": "Took our vague idea and turned it into a polished product in weeks. Would hire again in a heartbeat.",
+      "avatar": ""
+    }
+  ]
+}

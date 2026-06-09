@@ -2,23 +2,27 @@
 
 @layer base {
   :root {
+    /* Theme tokens — overridden at runtime from admin config (see layout.tsx). */
+    --p: 185 100% 48%;
+    --p2: 210 100% 40%;
+    --bg: 210 100% 4%;
     --background: 210 100% 4%;
     --foreground: 195 80% 95%;
     --card: 210 60% 8%;
     --card-foreground: 195 80% 95%;
-    --primary: 185 100% 48%;
+    --primary: var(--p);
     --primary-foreground: 210 100% 4%;
     --secondary: 210 40% 14%;
     --secondary-foreground: 195 80% 95%;
     --muted: 210 40% 12%;
     --muted-foreground: 210 20% 55%;
-    --accent: 185 100% 48%;
+    --accent: var(--p);
     --accent-foreground: 210 100% 4%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
     --border: 210 30% 18%;
     --input: 210 30% 18%;
-    --ring: 185 100% 48%;
+    --ring: var(--p);
     --radius: 1rem;
   }
 }
@@ -42,17 +46,21 @@
 
 html { scroll-behavior: smooth; }
 
+/* Hide scrollbar (mobile nav) */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: hsl(185 100% 48% / 0.3); border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: hsl(var(--p) / 0.3); border-radius: 99px; }
 
 /* Glow effect */
 .glow-teal {
-  box-shadow: 0 0 20px hsl(185 100% 48% / 0.15), 0 0 60px hsl(185 100% 48% / 0.05);
+  box-shadow: 0 0 20px hsl(var(--p) / 0.15), 0 0 60px hsl(var(--p) / 0.05);
 }
 .text-glow {
-  text-shadow: 0 0 20px hsl(185 100% 48% / 0.5);
+  text-shadow: 0 0 20px hsl(var(--p) / 0.5);
 }
 
 /* Glass card */
@@ -60,10 +68,10 @@ html { scroll-behavior: smooth; }
   background: hsl(210 60% 8% / 0.6);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid hsl(185 100% 48% / 0.1);
+  border: 1px solid hsl(var(--p) / 0.1);
 }
 .glass:hover {
-  border-color: hsl(185 100% 48% / 0.25);
+  border-color: hsl(var(--p) / 0.25);
 }
 
 /* Page fade in */
@@ -77,9 +85,9 @@ html { scroll-behavior: smooth; }
 
 /* Pulse ring */
 @keyframes pulseRing {
-  0%   { box-shadow: 0 0 0 0 hsl(185 100% 48% / 0.4); }
-  70%  { box-shadow: 0 0 0 12px hsl(185 100% 48% / 0); }
-  100% { box-shadow: 0 0 0 0 hsl(185 100% 48% / 0); }
+  0%   { box-shadow: 0 0 0 0 hsl(var(--p) / 0.4); }
+  70%  { box-shadow: 0 0 0 12px hsl(var(--p) / 0); }
+  100% { box-shadow: 0 0 0 0 hsl(var(--p) / 0); }
 }
 .pulse-ring { animation: pulseRing 2.5s ease-out infinite; }
 
@@ -89,7 +97,7 @@ html { scroll-behavior: smooth; }
   100% { background-position: 200% 0; }
 }
 .shimmer {
-  background: linear-gradient(90deg, transparent 0%, hsl(185 100% 48% / 0.08) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, hsl(var(--p) / 0.08) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: shimmer 3s ease-in-out infinite;
 }

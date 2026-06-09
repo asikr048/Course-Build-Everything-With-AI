@@ -11,12 +11,20 @@ interface Project {
   tech: string[]; year: string; link: string; imageURL: string; featured: boolean;
 }
 
+interface CareerItem { title: string; org: string; years: string; }
+
 export default function HomePage() {
   const cfg = useSiteConfig();
   const [projects, setProjects] = useState<Project[]>([]);
+  const [latestRole, setLatestRole] = useState<CareerItem | null>(null);
 
   useEffect(() => {
     fetch("/api/projects").then(r => r.json()).then(d => setProjects(d.items ?? [])).catch(() => {});
+    fetch("/api/career").then(r => r.json()).then(d => {
+      const sections = d.sections ?? [];
+      const exp = sections.find((s: { title: string }) => /experience|work/i.test(s.title)) ?? sections[0];
+      setLatestRole(exp?.items?.[0] ?? null);
+    }).catch(() => {});
   }, []);
 
   const featured = projects.filter(p => p.featured).slice(0, 2);
@@ -37,7 +45,7 @@ export default function HomePage() {
           {/* Avatar */}
           <div className="relative w-14 h-14">
             <div className="w-14 h-14 rounded-2xl overflow-hidden"
-              style={{ border: "2px solid hsl(185 100% 48% / 0.3)", background: "hsl(210 60% 12%)" }}>
+              style={{ border: "2px solid hsl(var(--p) / 0.3)", background: "hsl(210 60% 12%)" }}>
               {cfg.photoURL
                 ? <img src={cfg.photoURL} alt="Profile" className="w-full h-full object-cover"
                     style={{ objectPosition: cfg.photoFocus }} />
@@ -45,14 +53,14 @@ export default function HomePage() {
             </div>
             {/* Online dot */}
             <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full pulse-ring"
-              style={{ background: "hsl(185,100%,48%)", border: "2px solid hsl(210 100% 4%)" }} />
+              style={{ background: "hsl(var(--p))", border: "2px solid hsl(210 100% 4%)" }} />
           </div>
 
           {/* Name & bio */}
           <div className="flex-1 min-w-0">
-            <p className="text-white/30 text-xs mb-0.5 tracking-widest uppercase font-syne">Portfolio</p>
+            <p className="text-white/30 text-xs mb-0.5 tracking-widest uppercase font-syne">{cfg.heroTagline || cfg.brandName || "Portfolio"}</p>
             <h1 className="text-white font-bold text-xl leading-tight font-syne">{cfg.heroTitle}</h1>
-            <p className="text-xs mt-0.5 font-medium" style={{ color: "hsl(185,100%,60%)" }}>{cfg.heroSubtitle}</p>
+            <p className="text-xs mt-0.5 font-medium" style={{ color: "hsl(var(--p))" }}>{cfg.heroSubtitle}</p>
             {cfg.location && (
               <div className="flex items-center gap-1 mt-2 text-white/35 text-xs">
                 <MapPin size={10} /> {cfg.location}
@@ -69,8 +77,8 @@ export default function HomePage() {
               {socialLinks.map(({ href, icon: Icon, label }) => (
                 <a key={label} href={href} target="_blank" rel="noopener noreferrer" title={label}
                   className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110"
-                  style={{ background: "hsl(185 100% 48% / 0.08)", color: "hsl(185,100%,55%)",
-                    border: "1px solid hsl(185 100% 48% / 0.15)" }}>
+                  style={{ background: "hsl(var(--p) / 0.08)", color: "hsl(var(--p))",
+                    border: "1px solid hsl(var(--p) / 0.15)" }}>
                   <Icon size={14} />
                 </a>
               ))}
@@ -79,7 +87,7 @@ export default function HomePage() {
 
           <Link href="/personal"
             className="w-fit flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 hover:gap-2.5"
-            style={{ border: "1px solid hsl(185 100% 48% / 0.25)", color: "hsl(185,100%,60%)" }}>
+            style={{ border: "1px solid hsl(var(--p) / 0.25)", color: "hsl(var(--p))" }}>
             See more <ArrowRight size={11} />
           </Link>
         </GlassCard>
@@ -102,7 +110,7 @@ export default function HomePage() {
               {p.link && (
                 <a href={p.link} target="_blank" rel="noopener noreferrer"
                   className="absolute top-3 right-3 w-7 h-7 rounded-lg flex items-center justify-center transition-all hover:scale-110"
-                  style={{ background: "hsl(210 60% 8% / 0.7)", border: "1px solid hsl(185 100% 48% / 0.2)", color: "hsl(185,100%,60%)" }}>
+                  style={{ background: "hsl(210 60% 8% / 0.7)", border: "1px solid hsl(var(--p) / 0.2)", color: "hsl(var(--p))" }}>
                   <ExternalLink size={12} />
                 </a>
               )}
@@ -116,8 +124,8 @@ export default function HomePage() {
               <div className="flex flex-wrap gap-1">
                 {p.tech.slice(0, 3).map(t => (
                   <span key={t} className="text-[10px] px-2 py-0.5 rounded-md"
-                    style={{ background: "hsl(185 100% 48% / 0.06)", color: "hsl(185,100%,55%)",
-                      border: "1px solid hsl(185 100% 48% / 0.12)" }}>{t}</span>
+                    style={{ background: "hsl(var(--p) / 0.06)", color: "hsl(var(--p))",
+                      border: "1px solid hsl(var(--p) / 0.12)" }}>{t}</span>
                 ))}
               </div>
             </div>
@@ -136,16 +144,16 @@ export default function HomePage() {
               { val: "∞", label: "Coffee" },
             ].map(({ val, label }) => (
               <div key={label} className="rounded-xl p-3 flex flex-col"
-                style={{ background: "hsl(185 100% 48% / 0.05)", border: "1px solid hsl(185 100% 48% / 0.08)" }}>
-                <span className="text-xl font-bold font-syne text-glow" style={{ color: "hsl(185,100%,60%)" }}>{val}</span>
+                style={{ background: "hsl(var(--p) / 0.05)", border: "1px solid hsl(var(--p) / 0.08)" }}>
+                <span className="text-xl font-bold font-syne text-glow" style={{ color: "hsl(var(--p))" }}>{val}</span>
                 <span className="text-white/35 text-[11px] mt-0.5">{label}</span>
               </div>
             ))}
           </div>
           <Link href="/projects"
             className="mt-4 flex items-center justify-between text-xs font-medium px-3 py-2 rounded-xl transition-all hover:gap-3"
-            style={{ background: "hsl(185 100% 48% / 0.08)", color: "hsl(185,100%,60%)",
-              border: "1px solid hsl(185 100% 48% / 0.15)" }}>
+            style={{ background: "hsl(var(--p) / 0.08)", color: "hsl(var(--p))",
+              border: "1px solid hsl(var(--p) / 0.15)" }}>
             All projects <ArrowRight size={12} />
           </Link>
         </GlassCard>
@@ -167,7 +175,7 @@ export default function HomePage() {
         ) : (
           <GlassCard className="col-span-1 rounded-2xl p-5 flex flex-col justify-center items-center text-center gap-2" depth={6}>
             <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
-              style={{ background: "hsl(185 100% 48% / 0.1)" }}>⚡</div>
+              style={{ background: "hsl(var(--p) / 0.1)" }}>⚡</div>
             <p className="text-white/70 text-sm font-semibold font-syne">Open to work</p>
             <p className="text-white/30 text-xs">Available for freelance & full-time roles</p>
           </GlassCard>
@@ -177,13 +185,15 @@ export default function HomePage() {
         <GlassCard className="col-span-1 rounded-2xl p-5 flex flex-col justify-between gap-3" depth={6}>
           <p className="text-white/25 text-xs uppercase tracking-widest font-syne">Latest role</p>
           <div className="flex-1 flex flex-col justify-center gap-1">
-            <p className="text-white font-semibold text-sm font-syne">Senior Frontend Engineer</p>
-            <p className="text-xs" style={{ color: "hsl(185,100%,55%)" }}>Vercel · 2023–present</p>
-            <p className="text-white/35 text-xs mt-1">Building the future of web deployment and edge infrastructure.</p>
+            <p className="text-white font-semibold text-sm font-syne">{latestRole?.title || cfg.heroSubtitle}</p>
+            <p className="text-xs" style={{ color: "hsl(var(--p))" }}>
+              {latestRole ? [latestRole.org, latestRole.years].filter(Boolean).join(" · ") : cfg.location}
+            </p>
+            {cfg.aboutText && <p className="text-white/35 text-xs mt-1 line-clamp-2">{cfg.aboutText}</p>}
           </div>
           <Link href="/career"
             className="flex items-center gap-1.5 text-xs font-medium transition-all hover:gap-2.5"
-            style={{ color: "hsl(185,100%,55%)" }}>
+            style={{ color: "hsl(var(--p))" }}>
             Full timeline <ArrowRight size={11} />
           </Link>
         </GlassCard>

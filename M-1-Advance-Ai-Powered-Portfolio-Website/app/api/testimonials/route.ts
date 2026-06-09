@@ -6,9 +6,9 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    return NextResponse.json(await getDoc("career", { intro: "", sections: [] }));
+    return NextResponse.json(await getDoc("testimonials", { intro: "", items: [] }));
   } catch {
-    return NextResponse.json({ intro: "", sections: [] }, { status: 200 });
+    return NextResponse.json({ intro: "", items: [] }, { status: 200 });
   }
 }
 
@@ -17,7 +17,7 @@ export async function PUT(req: Request) {
   if (!jar.get("admin_session")) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const body = await req.json();
-    await setDoc("career", body);
+    await setDoc("testimonials", body);
     return NextResponse.json(body);
   } catch {
     return NextResponse.json({ error: "Failed" }, { status: 500 });

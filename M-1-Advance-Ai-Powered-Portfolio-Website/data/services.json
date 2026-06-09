@@ -1,0 +1,23 @@
+{
+  "intro": "Ways I can help bring your ideas to life.",
+  "items": [
+    {
+      "id": "s1",
+      "title": "Web Development",
+      "description": "Fast, accessible, responsive web apps built with modern frameworks and best practices.",
+      "icon": "Code"
+    },
+    {
+      "id": "s2",
+      "title": "UI / UX Design",
+      "description": "Clean, intuitive interfaces and design systems that users love and teams can build on.",
+      "icon": "Palette"
+    },
+    {
+      "id": "s3",
+      "title": "Consulting",
+      "description": "Architecture reviews, performance audits, and technical strategy for your product.",
+      "icon": "Lightbulb"
+    }
+  ]
+}
