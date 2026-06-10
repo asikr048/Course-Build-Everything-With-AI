@@ -9,6 +9,7 @@ export default function AdminLogin() {
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [focused, setFocused] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -54,9 +55,9 @@ export default function AdminLogin() {
               <input required value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
                 placeholder="admin"
                 className="px-3.5 py-2.5 rounded-xl text-sm text-white outline-none transition-all"
-                style={{ background: "hsl(210 60% 6%)", border: "1px solid hsl(var(--p) / 0.12)" }}
-                onFocus={e => e.target.style.borderColor = "hsl(var(--p) / 0.35)"}
-                onBlur={e => e.target.style.borderColor = "hsl(var(--p) / 0.12)"} />
+                style={{ background: "hsl(210 60% 6%)", border: `1px solid hsl(var(--p) / ${focused === "username" ? "0.35" : "0.12"})` }}
+                onFocus={() => setFocused("username")}
+                onBlur={() => setFocused(null)} />
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-white/35 text-xs uppercase tracking-wider font-syne">Password</label>
@@ -65,9 +66,9 @@ export default function AdminLogin() {
                   onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
                   placeholder="••••••••"
                   className="w-full px-3.5 py-2.5 pr-10 rounded-xl text-sm text-white outline-none transition-all"
-                  style={{ background: "hsl(210 60% 6%)", border: "1px solid hsl(var(--p) / 0.12)" }}
-                  onFocus={e => e.target.style.borderColor = "hsl(var(--p) / 0.35)"}
-                  onBlur={e => e.target.style.borderColor = "hsl(var(--p) / 0.12)"} />
+                  style={{ background: "hsl(210 60% 6%)", border: `1px solid hsl(var(--p) / ${focused === "password" ? "0.35" : "0.12"})` }}
+                  onFocus={() => setFocused("password")}
+                  onBlur={() => setFocused(null)} />
                 <button type="button" onClick={() => setShowPw(!showPw)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60">
                   {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
