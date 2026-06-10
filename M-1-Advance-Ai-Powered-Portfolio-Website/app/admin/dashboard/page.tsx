@@ -3,17 +3,19 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   User, Briefcase, FolderOpen, Code, Lock, LogOut, Save, Plus, Trash2,
-  ChevronRight, Bot, Eye, EyeOff, Palette, Search, Wrench, Quote, Sun, Moon,
+  ChevronRight, Bot, Eye, EyeOff, Palette, Search, Wrench, Quote, Sun, Moon, LayoutGrid, GripVertical,
 } from "lucide-react";
+import { Reorder } from "framer-motion";
 import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
 import { DEFAULT_CONFIG, type SiteConfig } from "@/lib/siteConfig";
 
-type Tab = "profile" | "design" | "seo" | "projects" | "career" | "skills" | "services" | "testimonials" | "ai" | "password";
+type Tab = "profile" | "home" | "design" | "seo" | "projects" | "career" | "skills" | "services" | "testimonials" | "ai" | "password";
 
 interface Project {
   id: string; title: string; category: string; description: string;
   tech: string[]; year: string; link: string; imageURL: string; featured: boolean;
+  focus?: string; // objectPosition for the image, e.g. "50% 30%"
 }
 interface CareerItem { id: string; type: string; title: string; org: string; years: string; }
 interface CareerSection { title: string; items: CareerItem[]; }
@@ -164,12 +166,20 @@ export default function AdminDashboard() {
   }
 
   function newProject(): Project {
-    return { id: uid(), title: "", category: "Web App", description: "", tech: [], year: new Date().getFullYear().toString(), link: "", imageURL: "", featured: false };
+    return { id: uid(), title: "", category: "Web App", description: "", tech: [], year: new Date().getFullYear().toString(), link: "", imageURL: "", featured: false, focus: "50% 50%" };
+  }
+  async function saveProjectsList(list: Project[], silent = false): Promise<boolean> {
+    const r = await fetch("/api/projects", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ intro: "", items: list }) });
+    if (r.ok) { if (!silent) toast.success("Order saved"); return true; }
+    toast.error("Failed to save."); return false;
+  }
+  /** Persist the current (drag-reordered) order without mutating state. */
+  function persistOrder() {
+    setProjects((curr) => { void saveProjectsList(curr); return curr; });
   }
   async function saveProject(p: Project) {
     const list = editProject && projects.find((x) => x.id === editProject.id) ? projects.map((x) => (x.id === p.id ? p : x)) : [...projects, p];
-    const r = await fetch("/api/projects", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ intro: "", items: list }) });
-    if (r.ok) { setProjects(list); setEditProject(null); toast.success("Project saved!"); } else toast.error("Failed.");
+    if (await saveProjectsList(list, true)) { setProjects(list); setEditProject(null); toast.success("Project saved!"); }
   }
   async function deleteProject(id: string) {
     const list = projects.filter((p) => p.id !== id);
@@ -209,6 +219,7 @@ export default function AdminDashboard() {
 
   const navItems: { id: Tab; icon: React.ComponentType<{ size?: number }>; label: string }[] = [
     { id: "profile", icon: User, label: "Profile" },
+    { id: "home", icon: LayoutGrid, label: "Home Hero" },
     { id: "design", icon: Palette, label: "Design" },
     { id: "seo", icon: Search, label: "SEO" },
     { id: "projects", icon: FolderOpen, label: "Projects" },
@@ -272,8 +283,9 @@ export default function AdminDashboard() {
 
             <div className="rounded-2xl p-5 mb-5" style={cardStyle}>
               <p className="text-xs font-semibold text-white/50 uppercase tracking-wider font-syne mb-4">Photo</p>
-              <div className="w-40">
-                <ImageUpload value={config.photoURL} onChange={(v) => setCfg("photoURL", v)} aspect="square" />
+              <div className="w-full max-w-md">
+                <ImageUpload value={config.photoURL} onChange={(v) => setCfg("photoURL", v)} aspect="square"
+                  focus={config.photoFocus} onFocusChange={(v) => setCfg("photoFocus", v)} />
               </div>
             </div>
 
@@ -324,6 +336,49 @@ export default function AdminDashboard() {
             </div>
 
             <SaveBtn onClick={() => saveConfig("Profile saved!")} saving={savingConfig} label="Save profile" />
+          </div>
+        )}
+
+        {/* ── Home Hero ── */}
+        {tab === "home" && (
+          <div className="max-w-2xl">
+            <h2 className="text-white font-bold text-lg font-syne mb-1">Home Hero</h2>
+            <p className="text-white/35 text-xs mb-6">The big landing section: typing roles, stat counters, and the tech marquee.</p>
+
+            <div className="rounded-2xl p-5 mb-5" style={cardStyle}>
+              <p className="text-xs font-semibold text-white/50 uppercase tracking-wider font-syne mb-4">Typing roles</p>
+              <TextArea label="Roles (one per line, or comma-separated)" value={config.roles}
+                onChange={(v) => setCfg("roles", v)} rows={4} placeholder={"Full-Stack Developer\nUI/UX Designer\nFreelancer"} />
+              <p className="text-white/25 text-[11px] mt-2">These cycle with a typing animation under your name.</p>
+            </div>
+
+            <div className="rounded-2xl p-5 mb-5" style={cardStyle}>
+              <p className="text-xs font-semibold text-white/50 uppercase tracking-wider font-syne mb-3">Stat counters</p>
+              <div className="mb-4"><Toggle label="Show stat counters on the home page" checked={config.showStats} onChange={(v) => setCfg("showStats", v)} /></div>
+              {(config.stats ?? []).map((s, i) => (
+                <div key={i} className="flex gap-2 mb-2">
+                  <input value={s.value} placeholder="30+" className={inputCls + " max-w-[120px]"} style={inputStyle}
+                    onChange={(e) => setCfg("stats", config.stats.map((x, j) => (j === i ? { ...x, value: e.target.value } : x)))} onFocus={focusOn} onBlur={focusOff} />
+                  <input value={s.label} placeholder="Projects Completed" className={inputCls} style={inputStyle}
+                    onChange={(e) => setCfg("stats", config.stats.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} onFocus={focusOn} onBlur={focusOff} />
+                  <button onClick={() => setCfg("stats", config.stats.filter((_, j) => j !== i))} className="p-2.5 rounded-lg text-red-400/50 hover:text-red-400"><Trash2 size={14} /></button>
+                </div>
+              ))}
+              <button onClick={() => setCfg("stats", [...(config.stats ?? []), { value: "", label: "" }])}
+                className="flex items-center gap-1.5 px-3 py-2 mt-1 rounded-xl text-xs font-medium" style={{ background: "hsl(var(--p) / 0.08)", color: "hsl(var(--p))", border: "1px solid hsl(var(--p) / 0.15)" }}>
+                <Plus size={12} /> Add stat
+              </button>
+              <p className="text-white/25 text-[11px] mt-2">Numbers count up automatically (e.g. &quot;30+&quot;, &quot;100%&quot;, &quot;5&quot;).</p>
+            </div>
+
+            <div className="rounded-2xl p-5 mb-5" style={cardStyle}>
+              <p className="text-xs font-semibold text-white/50 uppercase tracking-wider font-syne mb-3">Tech marquee</p>
+              <div className="mb-4"><Toggle label="Show scrolling tech marquee" checked={config.showMarquee} onChange={(v) => setCfg("showMarquee", v)} /></div>
+              <TextArea label="Tech stack (comma-separated)" value={config.techStack}
+                onChange={(v) => setCfg("techStack", v)} rows={2} placeholder="React, Next.js, TypeScript, Node.js" />
+            </div>
+
+            <SaveBtn onClick={() => saveConfig("Home hero saved! Refresh the site to see it.")} saving={savingConfig} label="Save home hero" />
           </div>
         )}
 
@@ -433,7 +488,8 @@ export default function AdminDashboard() {
                   <TextArea label="Description" value={editProject.description} onChange={(v) => setEditProject((p) => p && { ...p, description: v })} />
                   <TextField label="Tech (comma-separated)" value={editProject.tech.join(", ")} onChange={(v) => setEditProject((p) => p && { ...p, tech: v.split(",").map((s) => s.trim()).filter(Boolean) })} full />
                   <div className="col-span-2">
-                    <ImageUpload label="Project image" value={editProject.imageURL} onChange={(v) => setEditProject((p) => p && { ...p, imageURL: v })} />
+                    <ImageUpload label="Project image" value={editProject.imageURL} onChange={(v) => setEditProject((p) => p && { ...p, imageURL: v })}
+                      focus={editProject.focus} onFocusChange={(v) => setEditProject((p) => p && { ...p, focus: v })} />
                   </div>
                   <div className="col-span-2 flex items-center gap-2">
                     <input type="checkbox" id="featured" checked={editProject.featured} onChange={(e) => setEditProject((p) => p && { ...p, featured: e.target.checked })} className="w-4 h-4 rounded" />
@@ -446,20 +502,31 @@ export default function AdminDashboard() {
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col gap-3">
-                {projects.map((p) => (
-                  <div key={p.id} className="flex items-center gap-4 p-4 rounded-xl" style={cardStyle}>
-                    {p.imageURL && <img src={p.imageURL} alt={p.title} className="w-14 h-10 object-cover rounded-lg shrink-0" />}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-white text-sm font-medium font-syne truncate">{p.title || "Untitled"}</p>
-                      <p className="text-white/35 text-xs">{p.category} · {p.year}{p.featured ? " · ★ Featured" : ""}</p>
-                    </div>
-                    <button onClick={() => setEditProject(p)} className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{ background: "hsl(var(--p) / 0.08)", color: "hsl(var(--p))", border: "1px solid hsl(var(--p) / 0.15)" }}>Edit</button>
-                    <button onClick={() => deleteProject(p.id)} className="p-1.5 rounded-lg text-red-400/60 hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
-                  </div>
-                ))}
+              <>
+                {projects.length > 1 && (
+                  <p className="text-white/30 text-xs mb-3 flex items-center gap-1.5">
+                    <GripVertical size={12} /> Drag the handle to reorder — this is the order shown on your site.
+                  </p>
+                )}
+                <Reorder.Group axis="y" values={projects} onReorder={setProjects} className="flex flex-col gap-3">
+                  {projects.map((p) => (
+                    <Reorder.Item key={p.id} value={p} onDragEnd={persistOrder}
+                      className="flex items-center gap-3 p-4 rounded-xl" style={cardStyle}>
+                      <span className="cursor-grab active:cursor-grabbing text-white/25 hover:text-white/60 transition-colors touch-none">
+                        <GripVertical size={16} />
+                      </span>
+                      {p.imageURL && <img src={p.imageURL} alt={p.title} className="w-14 h-10 object-cover rounded-lg shrink-0" style={{ objectPosition: p.focus || "50% 50%" }} />}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white text-sm font-medium font-syne truncate">{p.title || "Untitled"}</p>
+                        <p className="text-white/35 text-xs">{p.category} · {p.year}{p.featured ? " · ★ Featured" : ""}</p>
+                      </div>
+                      <button onClick={() => setEditProject(p)} className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{ background: "hsl(var(--p) / 0.08)", color: "hsl(var(--p))", border: "1px solid hsl(var(--p) / 0.15)" }}>Edit</button>
+                      <button onClick={() => deleteProject(p.id)} className="p-1.5 rounded-lg text-red-400/60 hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
+                    </Reorder.Item>
+                  ))}
+                </Reorder.Group>
                 {projects.length === 0 && <p className="text-white/25 text-sm text-center py-8">No projects yet.</p>}
-              </div>
+              </>
             )}
           </div>
         )}

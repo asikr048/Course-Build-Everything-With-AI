@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Quote } from "lucide-react";
-import GlassCard from "@/components/GlassCard";
+import GlassCard, { CARD_PALETTE } from "@/components/GlassCard";
 
 interface Testimonial { id: string; name: string; role: string; quote: string; avatar: string; }
 interface TestiData { intro: string; items: Testimonial[]; }
@@ -25,24 +25,27 @@ export default function TestimonialsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {items.map((t) => (
-            <GlassCard key={t.id} className="rounded-2xl p-6 flex flex-col gap-4" depth={6}>
-              <Quote size={22} style={{ color: "hsl(var(--p) / 0.6)" }} />
-              <p className="text-white/70 text-sm leading-relaxed flex-1">&ldquo;{t.quote}&rdquo;</p>
-              <div className="flex items-center gap-3 pt-2">
-                <div className="w-10 h-10 rounded-full overflow-hidden shrink-0"
-                  style={{ background: "hsl(var(--p) / 0.15)", border: "1px solid hsl(var(--p) / 0.25)" }}>
-                  {t.avatar
-                    ? <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
-                    : <div className="w-full h-full flex items-center justify-center text-sm font-bold" style={{ color: "hsl(var(--p))" }}>{(t.name || "?").charAt(0)}</div>}
+          {items.map((t, i) => {
+            const accent = CARD_PALETTE[i % CARD_PALETTE.length];
+            return (
+              <GlassCard key={t.id} accent={accent} className="rounded-2xl p-6 flex flex-col gap-4" depth={6}>
+                <Quote size={22} style={{ color: `hsl(${accent} / 0.7)` }} />
+                <p className="text-white/70 text-sm leading-relaxed flex-1">&ldquo;{t.quote}&rdquo;</p>
+                <div className="flex items-center gap-3 pt-2">
+                  <div className="w-10 h-10 rounded-full overflow-hidden shrink-0"
+                    style={{ background: `hsl(${accent} / 0.18)`, border: `1px solid hsl(${accent} / 0.35)` }}>
+                    {t.avatar
+                      ? <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
+                      : <div className="w-full h-full flex items-center justify-center text-sm font-bold" style={{ color: `hsl(${accent})` }}>{(t.name || "?").charAt(0)}</div>}
+                  </div>
+                  <div>
+                    <p className="text-white text-sm font-semibold font-syne">{t.name}</p>
+                    <p className="text-white/40 text-xs">{t.role}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-white text-sm font-semibold font-syne">{t.name}</p>
-                  <p className="text-white/40 text-xs">{t.role}</p>
-                </div>
-              </div>
-            </GlassCard>
-          ))}
+              </GlassCard>
+            );
+          })}
         </div>
 
         {items.length === 0 && (

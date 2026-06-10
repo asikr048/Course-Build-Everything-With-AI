@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Briefcase, GraduationCap, Award, BookOpen } from "lucide-react";
-import GlassCard from "@/components/GlassCard";
+import GlassCard, { CARD_PALETTE } from "@/components/GlassCard";
 import TealBadge from "@/components/TealBadge";
 
 interface CareerItem { id: string; type: string; title: string; org: string; years: string; }
@@ -38,13 +38,14 @@ export default function CareerPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {data.sections.map(section => {
+          {data.sections.map((section, si) => {
             const Icon = iconMap[section.title] ?? Briefcase;
+            const accent = CARD_PALETTE[si % CARD_PALETTE.length];
             return (
-              <GlassCard key={section.title} className="rounded-2xl p-5" depth={6}>
+              <GlassCard key={section.title} accent={accent} className="rounded-2xl p-5" depth={6}>
                 <div className="flex items-center gap-2.5 mb-4">
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-                    style={{ background: "hsl(var(--p) / 0.12)", border: "1px solid hsl(var(--p) / 0.2)" }}>
+                    style={{ background: `hsl(${accent} / 0.14)`, border: `1px solid hsl(${accent} / 0.28)`, color: `hsl(${accent})` }}>
                     <Icon size={16} />
                   </div>
                   <h2 className="text-white font-semibold text-sm font-syne">{section.title}</h2>
@@ -56,14 +57,14 @@ export default function CareerPage() {
                       {/* Timeline line */}
                       {i < section.items.length - 1 && (
                         <div className="absolute left-[5px] top-4 bottom-0 w-px"
-                          style={{ background: "hsl(var(--p) / 0.12)" }} />
+                          style={{ background: `hsl(${accent} / 0.18)` }} />
                       )}
                       {/* Timeline dot */}
                       <div className="absolute left-0 top-1.5 w-2.5 h-2.5 rounded-full"
-                        style={{ background: "hsl(var(--p))", boxShadow: "0 0 8px hsl(var(--p) / 0.4)" }} />
+                        style={{ background: `hsl(${accent})`, boxShadow: `0 0 8px hsl(${accent} / 0.5)` }} />
 
                       <div className="rounded-xl p-3"
-                        style={{ background: "hsl(var(--p) / 0.04)", border: "1px solid hsl(var(--p) / 0.06)" }}>
+                        style={{ background: `hsl(${accent} / 0.05)`, border: `1px solid hsl(${accent} / 0.1)` }}>
                         <div className="flex items-start justify-between gap-2">
                           <div>
                             <TealBadge label={item.type} className="mb-1.5" />

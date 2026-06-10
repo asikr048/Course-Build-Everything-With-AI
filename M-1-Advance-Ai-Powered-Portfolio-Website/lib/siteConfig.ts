@@ -4,13 +4,25 @@
  * portfolio is fully rebrandable from the admin panel with no code edits.
  */
 
+export interface Stat {
+  value: string;  // e.g. "30+", "5", "100%"
+  label: string;  // e.g. "Projects Completed"
+}
+
 export interface SiteConfig {
   // ── Identity ──
   brandName: string;            // nav / logo text
   heroTagline: string;          // small eyebrow text above the name
   heroTitle: string;            // big name
   heroSubtitle: string;         // role / headline
+  roles: string;                // newline/comma separated — typing animation
   aboutText: string;
+
+  // ── Hero extras ──
+  techStack: string;            // comma-separated — marquee
+  stats: Stat[];                // animated counters
+  showStats: boolean;
+  showMarquee: boolean;
   photoURL: string;
   photoFocus: string;           // object-position, e.g. "50% 30%"
   location: string;
@@ -63,10 +75,21 @@ export interface SiteConfig {
 
 export const DEFAULT_CONFIG: SiteConfig = {
   brandName: "Portfolio",
-  heroTagline: "Welcome to my world",
+  heroTagline: "Available for freelance & full-time work",
   heroTitle: "Your Name",
   heroSubtitle: "Creative Developer & Designer",
+  roles: "Full-Stack Developer\nUI/UX Designer\nOpen-Source Contributor",
   aboutText: "Building things for the web at the intersection of design and engineering.",
+
+  techStack: "React, Next.js, TypeScript, Node.js, Tailwind CSS, PostgreSQL, Figma, AWS",
+  stats: [
+    { value: "30+", label: "Projects Completed" },
+    { value: "5+", label: "Years Experience" },
+    { value: "20+", label: "Happy Clients" },
+    { value: "15+", label: "Technologies" },
+  ],
+  showStats: true,
+  showMarquee: true,
   photoURL: "",
   photoFocus: "50% 30%",
   location: "Your City",
@@ -92,7 +115,7 @@ export const DEFAULT_CONFIG: SiteConfig = {
   themePrimary: "185 100% 48%",
   themeSecondary: "210 100% 40%",
   themeBackground: "210 100% 4%",
-  backgroundImage: "https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=1920&q=80",
+  backgroundImage: "",
   backgroundOpacity: "0.18",
 
   seoTitle: "Portfolio",

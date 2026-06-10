@@ -28,15 +28,41 @@ async function loadConfig(): Promise<SiteConfig> {
   }
 }
 
+/** Build a branded favicon: the uploaded one, or an auto-generated premium
+ *  GOLD monogram — a dark tile with a gilded ring and gold-gradient initial. */
+function buildFavicon(c: SiteConfig): string {
+  if (c.faviconURL) return c.faviconURL;
+  const initial = (c.brandName || c.heroTitle || "A").trim().charAt(0).toUpperCase() || "A";
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<defs>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#FFF1C2"/>
+<stop offset="0.42" stop-color="#E8B23D"/>
+<stop offset="1" stop-color="#9C6B16"/>
+</linearGradient>
+<linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#241a0a"/>
+<stop offset="1" stop-color="#0a0a0c"/>
+</linearGradient>
+</defs>
+<rect width="64" height="64" rx="16" fill="url(#tile)"/>
+<rect x="3" y="3" width="58" height="58" rx="13" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+<rect width="64" height="26" rx="16" fill="#ffffff" fill-opacity="0.06"/>
+<text x="32" y="35" dominant-baseline="central" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="40" fill="url(#gold)">${initial}</text>
+</svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const c = await loadConfig();
   const title = c.seoTitle || c.brandName || "Portfolio";
   const description = c.seoDescription || c.heroSubtitle || "Portfolio";
+  const favicon = buildFavicon(c);
   return {
     title,
     description,
     keywords: c.seoKeywords || undefined,
-    icons: c.faviconURL ? { icon: c.faviconURL } : undefined,
+    icons: { icon: favicon, shortcut: favicon, apple: favicon },
     openGraph: {
       title,
       description,
@@ -74,10 +100,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <div className="fixed inset-0 z-0" style={{
           background: isLight
             ? `radial-gradient(ellipse at 20% 50%, hsl(${c.themeBackground}) 0%, #ffffff 80%)`
-            : `radial-gradient(ellipse at 20% 50%, hsl(var(--p) / 0.06) 0%, hsl(${c.themeBackground}) 45%, #020810 100%)`,
+            : `radial-gradient(ellipse at 25% 15%, hsl(var(--p) / 0.08) 0%, transparent 45%), radial-gradient(ellipse at 80% 90%, hsl(var(--p2) / 0.08) 0%, transparent 45%), radial-gradient(ellipse at 50% 50%, hsl(${c.themeBackground}) 0%, #020810 100%)`,
         }} />
 
-        {/* Ambient background image */}
+        {/* Ambient background image (optional — set from admin) */}
         {c.backgroundImage && (
           <div className="fixed inset-0 z-0" style={{
             backgroundImage: `url('${c.backgroundImage}')`,
@@ -88,15 +114,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           }} />
         )}
 
-        {/* Accent orb top-right */}
-        <div className="fixed top-0 right-0 w-[600px] h-[600px] z-0 pointer-events-none" style={{
-          background: "radial-gradient(circle at 80% 20%, hsl(var(--p) / 0.10) 0%, transparent 65%)",
-        }} />
-
-        {/* Secondary orb bottom-left */}
-        <div className="fixed bottom-0 left-0 w-[500px] h-[500px] z-0 pointer-events-none" style={{
-          background: "radial-gradient(circle at 20% 80%, hsl(var(--p2) / 0.10) 0%, transparent 65%)",
-        }} />
+        {/* ── Premium aurora — slow-drifting color fields ── */}
+        {!isLight && (
+          <>
+            {/* primary, top-right */}
+            <div className="fixed -top-[15%] -right-[10%] w-[70vw] h-[70vw] max-w-[820px] max-h-[820px] z-0 pointer-events-none aurora-a" style={{
+              background: "radial-gradient(circle at 50% 50%, hsl(var(--p) / 0.16) 0%, transparent 60%)",
+            }} />
+            {/* secondary, bottom-left */}
+            <div className="fixed -bottom-[15%] -left-[10%] w-[65vw] h-[65vw] max-w-[760px] max-h-[760px] z-0 pointer-events-none aurora-b" style={{
+              background: "radial-gradient(circle at 50% 50%, hsl(var(--p2) / 0.15) 0%, transparent 60%)",
+            }} />
+            {/* violet wash, center */}
+            <div className="fixed top-[25%] left-[30%] w-[55vw] h-[55vw] max-w-[640px] max-h-[640px] z-0 pointer-events-none aurora-c" style={{
+              background: "radial-gradient(circle at 50% 50%, hsl(270 80% 62% / 0.10) 0%, transparent 60%)",
+            }} />
+          </>
+        )}
 
         {/* Vignette */}
         {!isLight && (

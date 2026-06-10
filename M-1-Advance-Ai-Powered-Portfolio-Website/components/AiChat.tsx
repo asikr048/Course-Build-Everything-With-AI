@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { X, Send, Bot, User, Loader2, RotateCcw, ChevronDown, Sparkles } from "lucide-react";
+import { X, Send, Bot, User, Loader2, RotateCcw, ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 interface Message {
@@ -25,20 +25,20 @@ const SUGGESTED = [
   "How can I contact you?",
 ];
 
-// Deep forest-green palette
+// Theme-aware palette — follows the site's primary accent (var(--p)/var(--p2))
 const G = {
-  bg:      "#071410",
-  bgCard:  "#091a12",
-  bgInput: "#050f0a",
-  border:  "rgba(34,197,94,0.13)",
-  borderH: "rgba(74,222,128,0.35)",
-  grad:    "linear-gradient(135deg,#15803d,#166534)",
-  bright:  "#4ade80",
-  mid:     "#22c55e",
-  glow:    "rgba(74,222,128,0.16)",
-  text:    "#dcfce7",
-  muted:   "rgba(187,247,208,0.45)",
-  faint:   "rgba(187,247,208,0.18)",
+  bg:      "hsl(210 60% 7% / 0.92)",
+  bgCard:  "hsl(210 55% 6%)",
+  bgInput: "hsl(210 60% 5%)",
+  border:  "hsl(var(--p) / 0.14)",
+  borderH: "hsl(var(--p) / 0.4)",
+  grad:    "linear-gradient(135deg, hsl(var(--p)), hsl(var(--p2)))",
+  bright:  "hsl(var(--p))",
+  mid:     "hsl(var(--p))",
+  glow:    "hsl(var(--p) / 0.18)",
+  text:    "hsl(195 80% 92%)",
+  muted:   "rgba(255,255,255,0.45)",
+  faint:   "rgba(255,255,255,0.2)",
 };
 
 export default function AiChat() {
@@ -121,36 +121,50 @@ export default function AiChat() {
   return (
     <>
       {/* ── Floating button — bottom RIGHT ── */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-1">
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-2">
         <button
           onClick={() => setOpen(o => !o)}
           aria-label="Toggle AI assistant"
-          className="relative w-[56px] h-[56px] rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95"
-          style={{
-            background: open
-              ? "linear-gradient(135deg,#991b1b,#7f1d1d)"
-              : G.grad,
-            boxShadow: open
-              ? "0 4px 20px rgba(153,27,27,0.45)"
-              : `0 4px 24px rgba(21,128,61,0.55), 0 0 0 3px ${G.border}`,
-          }}
+          className="group relative w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95"
+          style={{ boxShadow: open
+            ? "0 10px 30px rgba(0,0,0,0.5)"
+            : "0 12px 34px hsl(var(--p) / 0.45), 0 4px 12px rgba(0,0,0,0.4)" }}
         >
-          {pulse && !open && (
-            <span className="absolute inset-0 rounded-full"
-              style={{ animation: "aiPulse 2.2s ease-out infinite", background: G.mid + "28" }} />
+          {/* rotating conic glow ring */}
+          {!open && (
+            <span className="absolute -inset-[3px] rounded-2xl blur-[3px] opacity-70 group-hover:opacity-100 transition-opacity"
+              style={{ background: "conic-gradient(from 0deg, hsl(var(--p)), hsl(var(--p2)), hsl(var(--p)))", animation: "spinSlow 4s linear infinite" }} />
           )}
-          <span style={{ transform: open ? "rotate(45deg)" : "none", transition: "transform .3s" }}>
+          {/* body */}
+          <span className="absolute inset-0 rounded-2xl"
+            style={{ background: open ? "linear-gradient(150deg,#7f1d1d,#991b1b)" : "linear-gradient(150deg, hsl(var(--p)), hsl(var(--p2)))" }} />
+          {/* glossy top sheen */}
+          <span className="absolute inset-0 rounded-2xl"
+            style={{ background: "radial-gradient(130% 80% at 50% -15%, rgba(255,255,255,0.55), transparent 55%)" }} />
+          {/* inner ring */}
+          <span className="absolute inset-[3px] rounded-[14px]" style={{ border: "1px solid rgba(255,255,255,0.18)" }} />
+          {/* pulse */}
+          {pulse && !open && (
+            <span className="absolute inset-0 rounded-2xl"
+              style={{ animation: "aiPulse 2.2s ease-out infinite", background: "hsl(var(--p) / 0.3)" }} />
+          )}
+          {/* icon */}
+          <span className="relative z-10 drop-shadow" style={{ transform: open ? "rotate(90deg)" : "none", transition: "transform .3s" }}>
             {open
-              ? <X size={20} color="white" strokeWidth={2.5} />
-              : <Sparkles size={19} color="white" strokeWidth={2} />
-            }
+              ? <X size={22} color="white" strokeWidth={2.5} />
+              : <Bot size={24} color="white" strokeWidth={2} />}
           </span>
+          {/* status dot */}
+          {!open && (
+            <span className="absolute -top-0.5 -right-0.5 z-20 w-3.5 h-3.5 rounded-full"
+              style={{ background: "#22c55e", border: "2.5px solid hsl(210 55% 6%)", boxShadow: "0 0 8px #22c55e" }} />
+          )}
         </button>
 
         {!open && (
-          <span className="text-[10px] font-bold tracking-widest select-none"
-            style={{ color: G.mid, textShadow: `0 0 8px ${G.glow}` }}>
-            ASK AI
+          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest select-none"
+            style={{ background: "hsl(var(--p) / 0.1)", border: "1px solid hsl(var(--p) / 0.2)", color: "hsl(var(--p))" }}>
+            Ask AI about Me
           </span>
         )}
       </div>
@@ -337,6 +351,7 @@ export default function AiChat() {
           70%  { transform:scale(1.9); opacity:0; }
           100% { transform:scale(1.9); opacity:0; }
         }
+        @keyframes spinSlow { to { transform: rotate(360deg); } }
       `}</style>
     </>
   );

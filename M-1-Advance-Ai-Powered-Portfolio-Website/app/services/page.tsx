@@ -6,7 +6,7 @@ import {
   Zap, Rocket, Search, Mail, MessageSquare, Layout, Layers, Brush, Video,
   Music, FileText, Briefcase, Star, Heart, Shield, Settings, Terminal, type LucideIcon,
 } from "lucide-react";
-import GlassCard from "@/components/GlassCard";
+import GlassCard, { CARD_PALETTE } from "@/components/GlassCard";
 
 interface Service { id: string; title: string; description: string; icon: string; }
 interface ServicesData { intro: string; items: Service[]; }
@@ -44,16 +44,19 @@ export default function ServicesPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {items.map((s) => (
-            <GlassCard key={s.id} className="rounded-2xl p-6 flex flex-col gap-3" depth={8}>
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center"
-                style={{ background: "hsl(var(--p) / 0.12)", border: "1px solid hsl(var(--p) / 0.2)", color: "hsl(var(--p))" }}>
-                <IconFor name={s.icon} />
-              </div>
-              <p className="text-white font-semibold text-base font-syne">{s.title}</p>
-              <p className="text-white/45 text-sm leading-relaxed">{s.description}</p>
-            </GlassCard>
-          ))}
+          {items.map((s, i) => {
+            const accent = CARD_PALETTE[i % CARD_PALETTE.length];
+            return (
+              <GlassCard key={s.id} accent={accent} className="rounded-2xl p-6 flex flex-col gap-3" depth={8}>
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center"
+                  style={{ background: `hsl(${accent} / 0.14)`, border: `1px solid hsl(${accent} / 0.28)`, color: `hsl(${accent})` }}>
+                  <IconFor name={s.icon} />
+                </div>
+                <p className="text-white font-semibold text-base font-syne">{s.title}</p>
+                <p className="text-white/45 text-sm leading-relaxed">{s.description}</p>
+              </GlassCard>
+            );
+          })}
         </div>
 
         {items.length === 0 && (

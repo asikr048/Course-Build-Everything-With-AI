@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { MapPin, Mail, Phone, Github, Linkedin, Twitter, Instagram, Youtube, Dribbble, Globe, FileText } from "lucide-react";
 import { useSiteConfig } from "@/lib/hooks/useSiteConfig";
-import GlassCard from "@/components/GlassCard";
+import GlassCard, { CARD_PALETTE } from "@/components/GlassCard";
 
 interface SkillGroup { name: string; items: string[]; }
 interface SkillsData { groups: SkillGroup[]; }
@@ -72,21 +72,24 @@ export default function PersonalPage() {
 
           {/* Skills */}
           <div className="md:col-span-2 flex flex-col gap-4">
-            {skills?.groups.map(group => (
-              <GlassCard key={group.name} className="rounded-2xl p-5" depth={6}>
-                <p className="text-xs uppercase tracking-widest mb-3 font-syne" style={{ color: "hsl(var(--p))" }}>{group.name}</p>
-                <div className="flex flex-wrap gap-2">
-                  {group.items.map(skill => (
-                    <span key={skill}
-                      className="px-3 py-1.5 rounded-xl text-xs font-medium transition-all hover:scale-105 cursor-default"
-                      style={{ background: "hsl(var(--p) / 0.08)", color: "hsl(195,70%,80%)",
-                        border: "1px solid hsl(var(--p) / 0.15)" }}>
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </GlassCard>
-            ))}
+            {skills?.groups.map((group, gi) => {
+              const accent = CARD_PALETTE[gi % CARD_PALETTE.length];
+              return (
+                <GlassCard key={group.name} accent={accent} className="rounded-2xl p-5" depth={6}>
+                  <p className="text-xs uppercase tracking-widest mb-3 font-syne" style={{ color: `hsl(${accent})` }}>{group.name}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {group.items.map(skill => (
+                      <span key={skill}
+                        className="px-3 py-1.5 rounded-xl text-xs font-medium transition-all hover:scale-105 cursor-default"
+                        style={{ background: `hsl(${accent} / 0.1)`, color: "hsl(195,70%,82%)",
+                          border: `1px solid hsl(${accent} / 0.22)` }}>
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </GlassCard>
+              );
+            })}
           </div>
         </div>
       </div>

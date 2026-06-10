@@ -1,10 +1,32 @@
 {
-  "brandName": "Portfolio",
+  "brandName": "Asikur Rahman",
   "heroTagline": "Welcome to my world",
   "heroTitle": "Alex Morgan",
-  "heroSubtitle": "Full-Stack Developer & Designer",
+  "heroSubtitle": "EEE ",
+  "roles": "Full-Stack Developer\nUI/UX Designer\nOpen-Source Contributor",
   "aboutText": "I craft immersive digital experiences at the intersection of design and engineering. Passionate about clean code and beautiful interfaces.",
-  "photoURL": "",
+  "techStack": "React, Next.js, TypeScript, Node.js, Tailwind CSS, PostgreSQL, Figma, AWS",
+  "stats": [
+    {
+      "value": "30+",
+      "label": "Projects Completed"
+    },
+    {
+      "value": "5+",
+      "label": "Years Experience"
+    },
+    {
+      "value": "20+",
+      "label": "Happy Clients"
+    },
+    {
+      "value": "15+",
+      "label": "Technologies"
+    }
+  ],
+  "showStats": true,
+  "showMarquee": true,
+  "photoURL": "/uploads/1781018007078-WhatsApp_Image_2024-12-17_at_17.41.17_3f140f32.jpg",
   "photoFocus": "50% 30%",
   "location": "San Francisco, CA",
   "age": "",
@@ -26,7 +48,7 @@
   "themePrimary": "185 100% 48%",
   "themeSecondary": "210 100% 40%",
   "themeBackground": "210 100% 4%",
-  "backgroundImage": "https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=1920&q=80",
+  "backgroundImage": "",
   "backgroundOpacity": "0.18",
   "seoTitle": "Portfolio",
   "seoDescription": "Full-Stack Developer & Designer Portfolio",
@@ -40,5 +62,5 @@
   "showTestimonials": true,
   "showContact": true,
   "footerText": "",
-  "updatedAt": "2026-06-09T10:07:17.498Z"
+  "updatedAt": "2026-06-09T15:13:43.055Z"
 }

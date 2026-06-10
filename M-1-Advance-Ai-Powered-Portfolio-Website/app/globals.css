@@ -101,3 +101,74 @@ html { scroll-behavior: smooth; }
   background-size: 200% 100%;
   animation: shimmer 3s ease-in-out infinite;
 }
+
+/* Animated gradient text (hero name) */
+@keyframes textGradient {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+.gradient-text {
+  background: linear-gradient(90deg, hsl(var(--p)), #fff 45%, hsl(var(--p2)) 90%, hsl(var(--p)));
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: textGradient 6s ease infinite;
+}
+
+/* Blinking caret for typing effect */
+@keyframes caretBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.caret { animation: caretBlink 1s step-end infinite; }
+
+/* Floating profile photo */
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+.floaty { animation: floaty 6s ease-in-out infinite; }
+
+/* Morphing blob border-radius */
+@keyframes blobMorph {
+  0%, 100% { border-radius: 47% 53% 60% 40% / 45% 50% 50% 55%; }
+  33%      { border-radius: 60% 40% 45% 55% / 55% 45% 55% 45%; }
+  66%      { border-radius: 40% 60% 55% 45% / 50% 60% 40% 50%; }
+}
+.blob { animation: blobMorph 12s ease-in-out infinite; }
+
+/* Infinite marquee */
+@keyframes marqueeScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-track { animation: marqueeScroll 28s linear infinite; }
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+
+/* Staggered reveal on load */
+@keyframes riseIn { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+.rise { opacity: 0; animation: riseIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+/* Premium aurora — slow-drifting color fields behind the content */
+@keyframes auroraA {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(6%, 5%, 0) scale(1.18); }
+}
+@keyframes auroraB {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
+  50%      { transform: translate3d(-7%, -4%, 0) scale(1.22); }
+}
+@keyframes auroraC {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(5%, -6%, 0) scale(1.25); }
+}
+.aurora-a { animation: auroraA 20s ease-in-out infinite; }
+.aurora-b { animation: auroraB 26s ease-in-out infinite; }
+.aurora-c { animation: auroraC 32s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-text, .caret, .floaty, .blob, .marquee-track, .rise, .fade-up, .pulse-ring, .shimmer,
+  .aurora-a, .aurora-b, .aurora-c {
+    animation: none !important;
+  }
+  .rise { opacity: 1; }
+}
