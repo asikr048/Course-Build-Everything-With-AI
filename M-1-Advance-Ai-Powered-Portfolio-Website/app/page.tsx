@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight, Download, MapPin, ChevronDown, Sparkles,
-  Github, Linkedin, Twitter, Instagram, Youtube, Dribbble, Globe, Mail,
+  Github, Linkedin, Twitter, Instagram, Youtube, Dribbble, Globe, Mail, Settings2,
 } from "lucide-react";
 import { useSiteConfig } from "@/lib/hooks/useSiteConfig";
 import type { Stat } from "@/lib/siteConfig";
@@ -157,6 +157,13 @@ export default function HomePage() {
                 ))}
               </div>
             )}
+
+            {/* Discreet admin link */}
+            <Link href="/admin/login" title="Admin panel"
+              className="rise opacity-20 hover:opacity-60 transition-opacity w-fit"
+              style={{ animationDelay: "0.5s" }}>
+              <Settings2 size={13} className="text-white/50" />
+            </Link>
           </div>
 
           {/* Right — photo */}
