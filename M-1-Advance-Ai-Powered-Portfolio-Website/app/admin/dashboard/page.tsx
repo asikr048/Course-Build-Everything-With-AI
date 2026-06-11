@@ -335,6 +335,37 @@ export default function AdminDashboard() {
               </div>
             </div>
 
+            <div className="rounded-2xl p-5 mb-5" style={cardStyle}>
+              <p className="text-xs font-semibold text-white/50 uppercase tracking-wider font-syne mb-1">Personal card extras</p>
+              <p className="text-white/25 text-xs mb-4">Shown on the left profile card of the About / Personal page.</p>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Availability */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-white/35 text-xs uppercase tracking-wider font-syne">Availability status text</label>
+                  <input className={inputCls} style={inputStyle} value={config.availabilityStatus ?? "Open to work"}
+                    placeholder="e.g. Open to work" onChange={(e) => setCfg("availabilityStatus", e.target.value)}
+                    onFocus={focusOn} onBlur={focusOff} />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-white/35 text-xs uppercase tracking-wider font-syne">Availability indicator color</label>
+                  <select className={inputCls} style={inputStyle} value={config.availabilityColor ?? "green"}
+                    onChange={(e) => setCfg("availabilityColor", e.target.value)}>
+                    <option value="green">🟢 Green (available)</option>
+                    <option value="amber">🟡 Amber (limited)</option>
+                    <option value="red">🔴 Red (unavailable)</option>
+                  </select>
+                </div>
+                <TextArea label="Currently working on" value={config.currentlyWorkingOn ?? ""} rows={2}
+                  onChange={(v) => setCfg("currentlyWorkingOn", v)} placeholder="e.g. Building a SaaS product for content creators" />
+                <TextField label="Personality traits (comma-separated)" value={config.personalityTags ?? ""}
+                  onChange={(v) => setCfg("personalityTags", v)} full placeholder="Creative, Curious, Detail-oriented" />
+                <TextField label="Interests / Hobbies (comma-separated)" value={config.interests ?? ""}
+                  onChange={(v) => setCfg("interests", v)} full placeholder="Hiking, Photography, Chess" />
+                <TextArea label='Languages (comma-separated, use parens for level)' value={config.languages ?? ""} rows={2}
+                  onChange={(v) => setCfg("languages", v)} placeholder={"English (Native), Bengali (Fluent), Spanish (Basic)"} />
+              </div>
+            </div>
+
             <SaveBtn onClick={() => saveConfig("Profile saved!")} saving={savingConfig} label="Save profile" />
           </div>
         )}

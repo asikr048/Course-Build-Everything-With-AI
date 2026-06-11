@@ -1,0 +1,41 @@
+Here's the step-by-step deployment to Vercel:
+
+Step 1 — Push to GitHub first
+
+cd "D:\Asik\My Courses\Course-Build-Everything-With-AI\M-1-Advance-Ai-Powered-Portfolio-Website"
+git add .
+git commit -m "Portfolio ready for deployment"
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+git push -u origin main
+If you already have a GitHub repo, skip the remote add line.
+
+Step 2 — Deploy on Vercel
+Go to vercel.com → Sign in with GitHub
+Click "Add New Project"
+Import your GitHub repo
+Vercel auto-detects Next.js — click Deploy
+Step 3 — Set Environment Variables (important!)
+After deploy, go to your project → Settings → Environment Variables and add:
+
+Name	Value	Why
+ADMIN_PASSWORD	your password	(optional, already in config.json)
+DATABASE_URL	your Neon DB URL	So admin edits persist on Vercel
+BLOB_READ_WRITE_TOKEN	your Vercel Blob token	So image uploads work on live site
+Without DATABASE_URL, any changes you make in the admin panel on Vercel won't persist (Vercel's filesystem is read-only). The site will still work but use your committed data/*.json files.
+
+Step 4 — Set up Neon DB (free, 2 min)
+Go to neon.tech → Create free account
+Create a project → copy the pooled connection string
+Paste it as DATABASE_URL in Vercel env vars
+Redeploy (Vercel → Deployments → Redeploy)
+Step 5 — Set up Vercel Blob (for image uploads)
+Vercel Dashboard → Storage → Create → Blob Store
+Copy the BLOB_READ_WRITE_TOKEN
+Add it to Vercel env vars → Redeploy
+After that, every git push to main will auto-deploy your site. Your live URL will be something like your-repo.vercel.app.
+
+Want me to help set up the Neon database or check your git remote config?
+
+
+
+https://asikur-mocha.vercel.app/admin/dashboard

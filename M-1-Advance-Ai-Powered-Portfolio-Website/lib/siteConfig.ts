@@ -30,6 +30,14 @@ export interface SiteConfig {
   email: string;
   phone: string;
 
+  // ── Personal page extras (left card) ──
+  availabilityStatus: string;   // e.g. "Open to work", "Freelancing", "Not available"
+  availabilityColor: string;    // "green" | "amber" | "red"
+  currentlyWorkingOn: string;   // short note, e.g. "Building a SaaS product"
+  interests: string;            // comma-separated, e.g. "Hiking, Photography, Chess"
+  languages: string;            // comma-separated, e.g. "English (Native), Bengali (Fluent)"
+  personalityTags: string;      // comma-separated, e.g. "Creative, Curious, Detail-oriented"
+
   // ── Call to action (hero buttons) ──
   ctaPrimaryText: string;
   ctaPrimaryLink: string;
@@ -96,6 +104,13 @@ export const DEFAULT_CONFIG: SiteConfig = {
   age: "",
   email: "hello@example.com",
   phone: "",
+
+  availabilityStatus: "Open to work",
+  availabilityColor: "green",
+  currentlyWorkingOn: "",
+  interests: "",
+  languages: "",
+  personalityTags: "",
 
   ctaPrimaryText: "View Work",
   ctaPrimaryLink: "/projects",
