@@ -1,0 +1,30 @@
+{
+  "title": "Beyond Code",
+  "intro": "A few things that shape how I think and what I build.",
+  "items": [
+    {
+      "id": "h1",
+      "icon": "Lightbulb",
+      "title": "Problem Solver",
+      "description": "I love breaking down complex challenges into elegant, simple solutions."
+    },
+    {
+      "id": "h2",
+      "icon": "BookOpen",
+      "title": "Always Learning",
+      "description": "Constantly exploring new tools, frameworks, and ideas to stay sharp."
+    },
+    {
+      "id": "h3",
+      "icon": "Camera",
+      "title": "Photography",
+      "description": "Capturing moments and chasing good light when I step away from the keyboard."
+    },
+    {
+      "id": "h4",
+      "icon": "Users",
+      "title": "Team Player",
+      "description": "I thrive in collaborative teams that ship great products together."
+    }
+  ]
+}

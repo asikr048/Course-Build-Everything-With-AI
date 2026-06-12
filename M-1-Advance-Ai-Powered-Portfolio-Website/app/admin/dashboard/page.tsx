@@ -1,16 +1,17 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useDeferredValue } from "react";
 import { useRouter } from "next/navigation";
 import {
   User, Briefcase, FolderOpen, Code, Lock, LogOut, Save, Plus, Trash2,
-  ChevronRight, Bot, Eye, EyeOff, Palette, Search, Wrench, Quote, Sun, Moon, LayoutGrid, GripVertical,
+  ChevronRight, Bot, Eye, EyeOff, Palette, Search, Wrench, Quote, Sun, Moon, LayoutGrid, GripVertical, Sparkles,
 } from "lucide-react";
 import { Reorder } from "framer-motion";
 import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
 import { DEFAULT_CONFIG, type SiteConfig } from "@/lib/siteConfig";
+import { HIGHLIGHT_ICON_NAMES, highlightIcon, type HighlightItem } from "@/lib/highlightIcons";
 
-type Tab = "profile" | "home" | "design" | "seo" | "projects" | "career" | "skills" | "services" | "testimonials" | "ai" | "password";
+type Tab = "profile" | "home" | "design" | "seo" | "projects" | "career" | "skills" | "highlights" | "services" | "testimonials" | "ai" | "password";
 
 interface Project {
   id: string; title: string; category: string; description: string;
@@ -101,6 +102,9 @@ function SaveBtn({ onClick, saving, label }: { onClick: () => void; saving?: boo
 export default function AdminDashboard() {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("profile");
+  // Nav highlight uses `tab` (instant); heavy tab content renders from this
+  // deferred value so clicking a tab paints immediately instead of blocking.
+  const deferredTab = useDeferredValue(tab);
 
   const [config, setConfig] = useState<SiteConfig>(DEFAULT_CONFIG);
   const [savingConfig, setSavingConfig] = useState(false);
@@ -112,6 +116,10 @@ export default function AdminDashboard() {
   const [careerSections, setCareerSections] = useState<CareerSection[]>([]);
 
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>([]);
+
+  const [highlightsTitle, setHighlightsTitle] = useState("Beyond Code");
+  const [highlightsIntro, setHighlightsIntro] = useState("");
+  const [highlightItems, setHighlightItems] = useState<HighlightItem[]>([]);
 
   const [servicesIntro, setServicesIntro] = useState("");
   const [services, setServices] = useState<Service[]>([]);
@@ -136,15 +144,16 @@ export default function AdminDashboard() {
 
   const loadAll = useCallback(async () => {
     const safe = async (url: string, init?: RequestInit) => { try { const r = await fetch(url, init); return r.ok ? await r.json() : null; } catch { return null; } };
-    const [cfg, pr, ca, sk, sv, ts, ai] = await Promise.all([
+    const [cfg, pr, ca, sk, hl, sv, ts, ai] = await Promise.all([
       safe("/api/config"), safe("/api/projects"), safe("/api/career"),
-      safe("/api/skills"), safe("/api/services"), safe("/api/testimonials"),
+      safe("/api/skills"), safe("/api/highlights"), safe("/api/services"), safe("/api/testimonials"),
       safe("/api/ai-settings", { method: "POST" }),
     ]);
     if (cfg) setConfig({ ...DEFAULT_CONFIG, ...cfg });
     if (pr) setProjects(pr.items ?? []);
     if (ca) { setCareerIntro(ca.intro ?? ""); setCareerSections(ca.sections ?? []); }
     if (sk) setSkillGroups(sk.groups ?? []);
+    if (hl) { setHighlightsTitle(hl.title ?? "Beyond Code"); setHighlightsIntro(hl.intro ?? ""); setHighlightItems(hl.items ?? []); }
     if (sv) { setServicesIntro(sv.intro ?? ""); setServices(sv.items ?? []); }
     if (ts) { setTestiIntro(ts.intro ?? ""); setTestimonials(ts.items ?? []); }
     if (ai) setAiSettings((s) => ({ ...s, ...ai }));
@@ -195,6 +204,10 @@ export default function AdminDashboard() {
     const r = await fetch("/api/skills", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ groups: skillGroups }) });
     r.ok ? toast.success("Skills saved!") : toast.error("Failed.");
   }
+  async function saveHighlights() {
+    const r = await fetch("/api/highlights", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: highlightsTitle, intro: highlightsIntro, items: highlightItems }) });
+    r.ok ? toast.success("Highlights saved!") : toast.error("Failed.");
+  }
   async function saveServices() {
     const r = await fetch("/api/services", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ intro: servicesIntro, items: services }) });
     r.ok ? toast.success("Services saved!") : toast.error("Failed.");
@@ -225,6 +238,7 @@ export default function AdminDashboard() {
     { id: "projects", icon: FolderOpen, label: "Projects" },
     { id: "career", icon: Briefcase, label: "Career" },
     { id: "skills", icon: Code, label: "Skills" },
+    { id: "highlights", icon: Sparkles, label: "Highlights" },
     { id: "services", icon: Wrench, label: "Services" },
     { id: "testimonials", icon: Quote, label: "Testimonials" },
     { id: "ai", icon: Bot, label: "AI Settings" },
@@ -276,7 +290,7 @@ export default function AdminDashboard() {
       <main className="flex-1 overflow-y-auto p-8">
 
         {/* ── Profile ── */}
-        {tab === "profile" && (
+        {deferredTab === "profile" && (
           <div className="max-w-2xl">
             <h2 className="text-white font-bold text-lg font-syne mb-1">Profile</h2>
             <p className="text-white/35 text-xs mb-6">Your identity, contact details, and links — shown across the site.</p>
@@ -371,7 +385,7 @@ export default function AdminDashboard() {
         )}
 
         {/* ── Home Hero ── */}
-        {tab === "home" && (
+        {deferredTab === "home" && (
           <div className="max-w-2xl">
             <h2 className="text-white font-bold text-lg font-syne mb-1">Home Hero</h2>
             <p className="text-white/35 text-xs mb-6">The big landing section: typing roles, stat counters, and the tech marquee.</p>
@@ -414,7 +428,7 @@ export default function AdminDashboard() {
         )}
 
         {/* ── Design ── */}
-        {tab === "design" && (
+        {deferredTab === "design" && (
           <div className="max-w-2xl">
             <h2 className="text-white font-bold text-lg font-syne mb-1">Design & Theme</h2>
             <p className="text-white/35 text-xs mb-6">Rebrand the whole site — colors apply across every page after saving + refresh.</p>
@@ -478,7 +492,7 @@ export default function AdminDashboard() {
         )}
 
         {/* ── SEO ── */}
-        {tab === "seo" && (
+        {deferredTab === "seo" && (
           <div className="max-w-2xl">
             <h2 className="text-white font-bold text-lg font-syne mb-1">SEO & Sharing</h2>
             <p className="text-white/35 text-xs mb-6">Controls the browser title, search snippets, favicon, and social preview cards.</p>
@@ -498,7 +512,7 @@ export default function AdminDashboard() {
         )}
 
         {/* ── Projects ── */}
-        {tab === "projects" && (
+        {deferredTab === "projects" && (
           <div className="max-w-3xl">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-white font-bold text-lg font-syne">Projects</h2>
@@ -563,7 +577,7 @@ export default function AdminDashboard() {
         )}
 
         {/* ── Career ── */}
-        {tab === "career" && (
+        {deferredTab === "career" && (
           <div className="max-w-2xl">
             <h2 className="text-white font-bold text-lg font-syne mb-6">Career</h2>
             <div className="flex flex-col gap-1.5 mb-5">
@@ -599,7 +613,7 @@ export default function AdminDashboard() {
         )}
 
         {/* ── Skills ── */}
-        {tab === "skills" && (
+        {deferredTab === "skills" && (
           <div className="max-w-2xl">
             <h2 className="text-white font-bold text-lg font-syne mb-6">Skills</h2>
             {skillGroups.map((group, gi) => (
@@ -620,8 +634,61 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* ── Highlights (Beyond Code) ── */}
+        {deferredTab === "highlights" && (
+          <div className="max-w-2xl">
+            <h2 className="text-white font-bold text-lg font-syne mb-1">Beyond Code Highlights</h2>
+            <p className="text-white/35 text-xs mb-6">Editable cards that fill the open space on the About / Personal page. Add interests, values, or fun facts — each with its own icon.</p>
+
+            <div className="rounded-2xl p-5 mb-5" style={cardStyle}>
+              <div className="grid grid-cols-2 gap-4">
+                <TextField label="Section title" value={highlightsTitle} onChange={setHighlightsTitle} placeholder="Beyond Code" />
+                <TextField label="Intro (optional)" value={highlightsIntro} onChange={setHighlightsIntro} placeholder="A few things that shape how I think." />
+              </div>
+            </div>
+
+            {highlightItems.map((item, i) => (
+              <div key={item.id} className="mb-3 rounded-xl p-4" style={cardStyle}>
+                <div className="flex gap-2 mb-2">
+                  <input value={item.title} placeholder="Title (e.g. Photography)" className={inputCls + " font-semibold"} style={inputStyle}
+                    onChange={(e) => setHighlightItems(highlightItems.map((x, j) => (j === i ? { ...x, title: e.target.value } : x)))} onFocus={focusOn} onBlur={focusOff} />
+                  <button onClick={() => setHighlightItems(highlightItems.filter((_, j) => j !== i))} className="p-2.5 rounded-lg text-red-400/50 hover:text-red-400"><Trash2 size={14} /></button>
+                </div>
+                <textarea value={item.description} placeholder="Short description" rows={2} className={inputCls + " resize-none mb-3"} style={inputStyle}
+                  onChange={(e) => setHighlightItems(highlightItems.map((x, j) => (j === i ? { ...x, description: e.target.value } : x)))} onFocus={focusOn} onBlur={focusOff} />
+                <p className="text-white/35 text-xs uppercase tracking-wider font-syne mb-2">Icon</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {HIGHLIGHT_ICON_NAMES.map((name) => {
+                    const Icon = highlightIcon(name);
+                    const active = item.icon === name;
+                    return (
+                      <button key={name} type="button" title={name}
+                        onClick={() => setHighlightItems(highlightItems.map((x, j) => (j === i ? { ...x, icon: name } : x)))}
+                        className="w-9 h-9 rounded-lg flex items-center justify-center transition-all hover:scale-110"
+                        style={active
+                          ? { background: "hsl(var(--p) / 0.18)", border: "1px solid hsl(var(--p) / 0.5)", color: "hsl(var(--p))" }
+                          : { background: "hsl(210 60% 7%)", border: "1px solid hsl(var(--p) / 0.08)", color: "rgba(255,255,255,0.35)" }}>
+                        <Icon size={16} />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+
+            <div className="flex gap-3 mt-2">
+              <button onClick={() => setHighlightItems([...highlightItems, { id: uid(), icon: "Sparkles", title: "", description: "" }])}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium" style={{ background: "hsl(var(--p) / 0.08)", color: "hsl(var(--p))", border: "1px solid hsl(var(--p) / 0.15)" }}>
+                <Plus size={12} /> Add highlight
+              </button>
+              <SaveBtn onClick={saveHighlights} label="Save highlights" />
+            </div>
+            {highlightItems.length === 0 && <p className="text-white/25 text-sm py-6">No highlights yet — add your first card above.</p>}
+          </div>
+        )}
+
         {/* ── Services ── */}
-        {tab === "services" && (
+        {deferredTab === "services" && (
           <div className="max-w-2xl">
             <h2 className="text-white font-bold text-lg font-syne mb-6">Services</h2>
             <div className="flex flex-col gap-1.5 mb-5">
@@ -649,7 +716,7 @@ export default function AdminDashboard() {
         )}
 
         {/* ── Testimonials ── */}
-        {tab === "testimonials" && (
+        {deferredTab === "testimonials" && (
           <div className="max-w-2xl">
             <h2 className="text-white font-bold text-lg font-syne mb-6">Testimonials</h2>
             <div className="flex flex-col gap-1.5 mb-5">
@@ -679,7 +746,7 @@ export default function AdminDashboard() {
         )}
 
         {/* ── AI Settings ── */}
-        {tab === "ai" && (
+        {deferredTab === "ai" && (
           <div className="max-w-2xl">
             <h2 className="text-white font-bold text-lg font-syne mb-1">AI Settings</h2>
             <p className="text-white/35 text-xs mb-6">Configure the AI assistant that powers the &quot;Ask AI&quot; chat on your portfolio.</p>
@@ -743,7 +810,7 @@ export default function AdminDashboard() {
         )}
 
         {/* ── Password ── */}
-        {tab === "password" && (
+        {deferredTab === "password" && (
           <div className="max-w-sm">
             <h2 className="text-white font-bold text-lg font-syne mb-6">Change Password</h2>
             <form onSubmit={changePassword} className="flex flex-col gap-4 p-5 rounded-2xl" style={{ background: "hsl(210 60% 8% / 0.6)", border: "1px solid hsl(var(--p) / 0.1)" }}>
